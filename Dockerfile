@@ -1,4 +1,4 @@
-ARG AUTOWARE_VERSION=1.14.0-melodic-cuda
+ARG AUTOWARE_VERSION=1.14.0-melodic
 
 FROM autoware/autoware:$AUTOWARE_VERSION
 
@@ -11,13 +11,18 @@ RUN cd ./Autoware \
     && vcs import src < autoware.ai.repos \
     && git --git-dir=./src/autoware/simulation/.git --work-tree=./src/autoware/simulation pull \
     && source /opt/ros/melodic/setup.bash \
-    && AUTOWARE_COMPILE_WITH_CUDA=1 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+    && AUTOWARE_COMPILE_WITH_CUDA=0 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 
-# CARLA PythonAPI
-RUN mkdir ./PythonAPI
-ADD --chown=autoware https://carla-releases.s3.eu-west-3.amazonaws.com/Backup/carla-0.9.10-py2.7-linux-x86_64.egg ./PythonAPI
-RUN echo "export PYTHON2_EGG=$(ls /home/autoware/PythonAPI | grep py2.)" >> .bashrc \
-    && echo "export PYTHONPATH=\$PYTHONPATH:~/PythonAPI/\$PYTHON2_EGG" >> .bashrc
+# Fix GPG error by updating ROS repository key
+RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F42ED6FBAB17C654
+
+# Update package lists and install pip
+RUN apt-get update && apt-get install -y python-pip
+RUN pip install --upgrade pip
+
+# Now install the CARLA Python API via pip
+RUN pip install carla==0.9.13
+
 
 # CARLA ROS Bridge
 # There is some kind of mismatch between the ROS debian packages installed in the Autoware image and
@@ -35,7 +40,7 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     && sudo rm -rf /var/lib/apt/lists/*
 RUN pip install simple-pid pygame networkx==2.2
 
-RUN git clone -b '0.9.10.1' --recurse-submodules https://github.com/carla-simulator/ros-bridge.git
+RUN git clone -b '0.9.12' --recurse-submodules https://github.com/carla-simulator/ros-bridge.git
 
 # CARLA Autoware agent
 COPY --chown=autoware . ./carla-autoware
