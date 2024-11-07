@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Default settings
+USER_ID="$(id -u)"
+XAUTH=$HOME/.Xauthority
+
 #RUNTIME=""
 #DOCKER_VERSION=$(docker version --format '{{.Client.Version}}' | cut --delimiter=. --fields=1,2)
 #if [[ $DOCKER_VERSION < "19.03" ]] && ! type nvidia-docker; then
@@ -10,10 +14,9 @@
 
 docker run \
     -it --rm \
-    --volume=$(pwd)/autoware-contents:/home/autoware/autoware-contents:ro \
+    --volume=$(pwd)/autoware-contents:/home/autoware/autoware-contents:rw \
     --env="DISPLAY=${DISPLAY}" \
     --privileged \
     --net=host \
     $RUNTIME \
     carla-autoware:latest
-
