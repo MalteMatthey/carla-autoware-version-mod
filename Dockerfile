@@ -50,8 +50,8 @@ RUN pip install transforms3d simple-pid pygame networkx==2.2
 
 USER autoware
 
-RUN git clone -b 'master' --recurse-submodules https://github.com/carla-simulator/ros-bridge.git
-# RUN git clone -b 'master' --recurse-submodules https://github.com/MalteMatthey/ros-bridge-param-mod.git
+# RUN git clone -b 'master' --recurse-submodules https://github.com/carla-simulator/ros-bridge.git
+RUN git clone -b 'master' --recurse-submodules https://github.com/MalteMatthey/ros-bridge-param-mod.git
 
 # Update code in carla-ros-bridge package and fix the tf tree issue.
 # The fix has been introduced in latest version (since 0.9.12):
@@ -65,8 +65,8 @@ COPY --chown=autoware . ./carla-autoware
 
 RUN mkdir -p carla_ws/src
 RUN cd carla_ws/src \
-    && ln -s ../../ros-bridge \
-    # && ln -s ../../ros-bridge-param-mod \
+    # && ln -s ../../ros-bridge \
+    && ln -s ../../ros-bridge-param-mod \
     && ln -s ../../carla-autoware/carla-autoware-agent \
     && cd .. \
     && source /opt/ros/melodic/setup.bash \

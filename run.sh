@@ -17,6 +17,6 @@ docker run \
     --volume=$(pwd)/autoware-contents:/home/autoware/autoware-contents:rw \
     --env="DISPLAY=${DISPLAY}" \
     --privileged \
-    --net=host \
+    --network="host" \
     $RUNTIME \
     carla-autoware:latest
