@@ -58,7 +58,7 @@ RUN git clone -b 'master' --recurse-submodules https://github.com/carla-simulato
 # https://github.com/carla-simulator/ros-bridge/pull/570/commits/9f903cf43c4ef3dd0b909721e044c62a8796f841
 COPY --chown=autoware update_ros_bridge.patch /home/$USERNAME/ros-bridge
 RUN cd /home/$USERNAME/ros-bridge \
-    && git apply update_ros_bridge.patch
+   && git apply update_ros_bridge.patch
 
 # CARLA Autoware agent
 COPY --chown=autoware . ./carla-autoware-version-mod
