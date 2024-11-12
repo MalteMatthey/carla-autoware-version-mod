@@ -1,4 +1,4 @@
-ARG AUTOWARE_VERSION=latest-melodic
+ARG AUTOWARE_VERSION=latest-melodic-cuda
 
 FROM autoware/autoware:$AUTOWARE_VERSION
 
@@ -21,11 +21,12 @@ RUN cd /home/$USERNAME/Autoware \
 # Compile with colcon build.
 RUN cd ./Autoware \
     && source /opt/ros/melodic/setup.bash \
-    && AUTOWARE_COMPILE_WITH_CUDA=0 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+    && AUTOWARE_COMPILE_WITH_CUDA=1 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 USER root
 # Fix GPG error by updating ROS repository key
 RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F42ED6FBAB17C654
+RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys A4B469963BF863CC
 # Update package lists and install pip as root
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install --upgrade pip
